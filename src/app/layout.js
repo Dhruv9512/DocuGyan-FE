@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className="dark">
       <body className={spaceGrotesk.className}>
         {/* Google OAuth Provider wrapping the entire app */}
-        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID"}>
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
           {children}
         </GoogleOAuthProvider>
       </body>
