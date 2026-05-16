@@ -409,10 +409,12 @@ export function buildProcessWebSocketUrl(projectId, accessToken) {
   let host = "docugyan-backend.onrender.com";
 
   // Use local backend if running locally
+  /* 
   if (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
     protocol = "ws:";
     host = "127.0.0.1:8000";
   }
+  */
 
   const wsUrl = new URL(`/ws/agent/process/${projectId}/`, `${protocol}//${host}`);
   wsUrl.searchParams.set("client", "docugyan-fe");
@@ -495,10 +497,12 @@ export function buildChatWebSocketUrl(projectId, sessionId, accessToken) {
   let protocol = "wss:";
   let host = "docugyan-backend.onrender.com";
 
+  /*
   if (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
     protocol = "ws:";
     host = "127.0.0.1:8000";
   }
+  */
 
   const wsUrl = new URL(`/ws/chat/${projectId}/${sessionId}/`, `${protocol}//${host}`);
 
