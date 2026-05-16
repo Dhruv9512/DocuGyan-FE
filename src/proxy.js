@@ -8,7 +8,7 @@ const LOGIN_PATH = "/login";
 const OTP_PATH = "/otp-verification";
 
 function isPublicPath(pathname) {
-  return pathname === LOGIN_PATH || pathname === OTP_PATH;
+  return pathname === LOGIN_PATH || pathname === OTP_PATH || pathname.startsWith("/backend");
 }
 
 function isLoginPath(pathname) {
@@ -87,6 +87,9 @@ export async function proxy(request) {
   }
 
   if (isRootRoute || isPublicRoute) {
+    if (isLoginRoute) {
+      return NextResponse.next();
+    }
     const response = NextResponse.redirect(new URL(LOGIN_PATH, request.url));
     clearAuthCookies(response);
     return response;
@@ -98,5 +101,5 @@ export async function proxy(request) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)$).*)"],
+  matcher: ["/((?!api|backend|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)$).*)"],
 };
