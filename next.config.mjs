@@ -11,12 +11,7 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: "/api/backend/:path*",
-        destination: "https://docugyan-backend.onrender.com/api/:path*",
-      },
-      {
-        // Special case for auth endpoints that don't start with /api/ in your Django urls
-        source: "/api/backend/auth/:path*",
+        source: "/backend/:path*",
         destination: "https://docugyan-backend.onrender.com/:path*",
       },
     ];
