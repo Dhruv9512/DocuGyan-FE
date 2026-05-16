@@ -101,6 +101,10 @@ export default async function proxy(request) {
     return response;
   }
 
+  if (isLoginRoute) {
+    return NextResponse.next();
+  }
+
   const response = NextResponse.redirect(createLoginRedirectUrl(request));
   clearAuthCookies(response);
   return response;
