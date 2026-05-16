@@ -52,7 +52,9 @@ function sendPing(socket) {
 
 async function connectInternal(state) {
   const wsTokenPayload = await state.wsTokenProvider();
-  const wsToken = wsTokenPayload?.access_token?.trim();
+  console.log("[WS] Token Payload:", wsTokenPayload);
+  const wsToken = (wsTokenPayload?.access_token || wsTokenPayload?.token || wsTokenPayload?.access)?.trim();
+  console.log("[WS] Extracted Token:", wsToken ? "Yes" : "No");
 
   if (!wsToken) {
     throw new Error("Failed to get WebSocket token.");

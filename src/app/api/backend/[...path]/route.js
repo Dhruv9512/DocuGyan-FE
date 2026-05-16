@@ -29,8 +29,9 @@ async function proxyRequest(request, params) {
   const hasTrailingSlash = request.nextUrl.pathname.endsWith("/");
   const targetPath = pathname + (hasTrailingSlash ? "/" : "");
   
-  // The actual backend URL
-  const backendBase = "https://docugyan-backend.onrender.com";
+  // The actual backend URL based on DEBUG
+  const isDebug = process.env.NEXT_PUBLIC_DEBUG === "true";
+  const backendBase = isDebug ? "http://localhost:8000" : "https://docugyan-backend.onrender.com";
   const backendUrl = `${backendBase}/${targetPath}${searchParams}`;
   
   const headers = new Headers(request.headers);

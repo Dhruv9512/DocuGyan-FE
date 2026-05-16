@@ -32,9 +32,11 @@ export class ApiError extends Error {
 }
 
 export function getBackendBaseUrl() {
-  // If running on the Next.js server (SSR), use the absolute Render URL
+  // If running on the Next.js server (SSR), use the absolute URL based on DEBUG
   if (typeof window === "undefined") {
-    return "https://docugyan-backend.onrender.com";
+    return process.env.NEXT_PUBLIC_DEBUG === "true" 
+      ? "http://localhost:8000" 
+      : "https://docugyan-backend.onrender.com";
   }
 
   // If running in the user's browser, use the proxy route
@@ -404,17 +406,9 @@ export async function uploadFileToBlob(file, folder, options = {}) {
 }
 
 export function buildProcessWebSocketUrl(projectId, accessToken) {
-  // Always connect WebSockets directly to the backend domain
-  let protocol = "wss:";
-  let host = "docugyan-backend.onrender.com";
-
-  // Use local backend if running locally
-  /* 
-  if (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
-    protocol = "ws:";
-    host = "127.0.0.1:8000";
-  }
-  */
+  const isDebug = process.env.NEXT_PUBLIC_DEBUG === "true";
+  let protocol = isDebug ? "ws:" : "wss:";
+  let host = isDebug ? "localhost:8000" : "docugyan-backend.onrender.com";
 
   const wsUrl = new URL(`/ws/agent/process/${projectId}/`, `${protocol}//${host}`);
   wsUrl.searchParams.set("client", "docugyan-fe");
@@ -464,9 +458,7 @@ export async function fetchChatSessionList(projectId) {
   const backendBase = getBackendBaseUrl();
   return requestJson(
     `${backendBase}/api/chat/sessions/?project_id=${projectId}`,
-    {
-      method: "GET",
-    },
+    { method: "GET" },
     "Failed to load chat sessions."
   );
 }
@@ -475,9 +467,7 @@ export async function fetchChatSessionDetails(sessionId) {
   const backendBase = getBackendBaseUrl();
   return requestJson(
     `${backendBase}/api/chat/sessions/${sessionId}/`,
-    {
-      method: "GET",
-    },
+    { method: "GET" },
     "Failed to load chat session details."
   );
 }
@@ -486,23 +476,15 @@ export async function deleteChatSession(sessionId) {
   const backendBase = getBackendBaseUrl();
   return requestJson(
     `${backendBase}/api/chat/sessions/${sessionId}/`,
-    {
-      method: "DELETE",
-    },
+    { method: "DELETE" },
     "Failed to delete chat session."
   );
 }
 
 export function buildChatWebSocketUrl(projectId, sessionId, accessToken) {
-  let protocol = "wss:";
-  let host = "docugyan-backend.onrender.com";
-
-  /*
-  if (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
-    protocol = "ws:";
-    host = "127.0.0.1:8000";
-  }
-  */
+  const isDebug = process.env.NEXT_PUBLIC_DEBUG === "true";
+  let protocol = isDebug ? "ws:" : "wss:";
+  let host = isDebug ? "localhost:8000" : "docugyan-backend.onrender.com";
 
   const wsUrl = new URL(`/ws/chat/${projectId}/${sessionId}/`, `${protocol}//${host}`);
 

@@ -9,9 +9,11 @@ function normalizeBoolean(value, fallback) {
 }
 
 export function getBackendBaseUrl() {
-  // If running on the Next.js server (SSR), use the absolute Render URL
+  // If running on the Next.js server (SSR), use the absolute URL based on DEBUG
   if (typeof window === "undefined") {
-    return "https://docugyan-backend.onrender.com";
+    return process.env.NEXT_PUBLIC_DEBUG === "true" 
+      ? "http://localhost:8000" 
+      : "https://docugyan-backend.onrender.com";
   }
 
   // If running in the user's browser, use the proxy route

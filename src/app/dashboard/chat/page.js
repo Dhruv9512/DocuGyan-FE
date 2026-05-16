@@ -1025,8 +1025,9 @@ function ChatSession({ projectId }) {
     const connect = async () => {
       try {
         const tokenRes = await fetchWsToken();
-        const token = tokenRes?.access_token || tokenRes?.token || "";
+        const token = (tokenRes?.access_token || tokenRes?.token || tokenRes?.access || "")?.trim();
         const wsUrl = buildChatWebSocketUrl(projectId, urlSessionId, token);
+        console.log("[WS URL]", wsUrl);
         ws = new WebSocket(wsUrl);
         wsRef.current = ws;
 
