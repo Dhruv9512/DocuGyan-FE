@@ -9,7 +9,20 @@ function normalizeBoolean(value, fallback) {
 }
 
 export function getBackendBaseUrl() {
-  return process.env.AUTH_BACKEND_BASE_URL ?? process.env.NEXT_PUBLIC_BACKEND_BASE_URL ?? DEFAULT_BACKEND_BASE_URL;
+  // If running on the Next.js server (SSR), use the absolute Render URL
+  if (typeof window === "undefined") {
+    return "https://docugyan-backend.onrender.com";
+  }
+
+  // If running in the user's browser, use the proxy route
+  const url = process.env.NEXT_PUBLIC_BACKEND_BASE_URL ?? "/api/backend";
+
+  // Prepend origin if it's a relative path to avoid crashes in new URL()
+  if (url.startsWith("/")) {
+    return window.location.origin + url;
+  }
+
+  return url;
 }
 
 export function getAuthCookieOptions() {

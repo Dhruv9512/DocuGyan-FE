@@ -51,6 +51,8 @@ export default async function proxy(request) {
   const accessToken = request.cookies.get(ACCESS_COOKIE_NAME)?.value;
   const refreshToken = request.cookies.get(REFRESH_COOKIE_NAME)?.value;
 
+  console.log(`[Proxy] Path: ${pathname}, AccessToken: ${accessToken ? "Yes" : "No"}, RefreshToken: ${refreshToken ? "Yes" : "No"}`);
+
   if (accessToken) {
     if (isRootRoute || isPublicRoute) {
       return NextResponse.redirect(new URL(DASHBOARD_PATH, request.url));

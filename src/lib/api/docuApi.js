@@ -32,7 +32,20 @@ export class ApiError extends Error {
 }
 
 export function getBackendBaseUrl() {
-  return process.env.NEXT_PUBLIC_BACKEND_BASE_URL ?? DEFAULT_BACKEND_BASE_URL;
+  // If running on the Next.js server (SSR), use the absolute Render URL
+  if (typeof window === "undefined") {
+    return "https://docugyan-backend.onrender.com";
+  }
+
+  // If running in the user's browser, use the proxy route
+  const url = process.env.NEXT_PUBLIC_BACKEND_BASE_URL ?? "/api/backend";
+  
+  // Prepend origin if it's a relative path to avoid crashes in new URL()
+  if (url.startsWith("/")) {
+    return window.location.origin + url;
+  }
+  
+  return url;
 }
 
 async function readJsonSafe(response) {
@@ -391,17 +404,14 @@ export async function uploadFileToBlob(file, folder, options = {}) {
 }
 
 export function buildProcessWebSocketUrl(projectId, accessToken) {
-  const backendBase = new URL(getBackendBaseUrl());
-  let protocol = backendBase.protocol === "https:" ? "wss:" : "ws:";
-  let host = backendBase.host; // e.g. "127.0.0.1:8000"
+  // Always connect WebSockets directly to the backend domain
+  let protocol = "wss:";
+  let host = "docugyan-backend.onrender.com";
 
-  // If running in the browser and the backend is configured to loopback,
-  // but we are accessing it via a LAN IP (like 172.x or 192.x),
-  // we must swap the loopback IP for the LAN IP so the phone/external device
-  // actually attempts to connect to the server device instead of itself.
-  if (typeof window !== "undefined" && backendBase.hostname === "127.0.0.1" && window.location.hostname !== "127.0.0.1" && window.location.hostname !== "localhost") {
-    host = `${window.location.hostname}:${backendBase.port || "8000"}`;
-    protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+  // Use local backend if running locally
+  if (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+    protocol = "ws:";
+    host = "127.0.0.1:8000";
   }
 
   const wsUrl = new URL(`/ws/agent/process/${projectId}/`, `${protocol}//${host}`);
@@ -482,13 +492,12 @@ export async function deleteChatSession(sessionId) {
 }
 
 export function buildChatWebSocketUrl(projectId, sessionId, accessToken) {
-  const backendBase = new URL(getBackendBaseUrl());
-  let protocol = backendBase.protocol === "https:" ? "wss:" : "ws:";
-  let host = backendBase.host;
+  let protocol = "wss:";
+  let host = "docugyan-backend.onrender.com";
 
-  if (typeof window !== "undefined" && backendBase.hostname === "127.0.0.1" && window.location.hostname !== "127.0.0.1" && window.location.hostname !== "localhost") {
-    host = `${window.location.hostname}:${backendBase.port || "8000"}`;
-    protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+  if (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+    protocol = "ws:";
+    host = "127.0.0.1:8000";
   }
 
   const wsUrl = new URL(`/ws/chat/${projectId}/${sessionId}/`, `${protocol}//${host}`);

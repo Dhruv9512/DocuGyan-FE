@@ -10,12 +10,7 @@ const nextConfig = {
   trailingSlash: true,
   allowedDevOrigins: ["172.20.10.8"],
   async rewrites() {
-    return [
-      {
-        source: "/backend/:path*",
-        destination: "https://docugyan-backend.onrender.com/:path*",
-      },
-    ];
+    return [];
   },
   turbopack: {
     root: __dirname,
