@@ -36,11 +36,17 @@ async function refreshAccessToken(request) {
   });
 }
 
-export async function proxy(request) {
-  const { pathname } = request.nextUrl;
+export default async function proxy(request) {
+  let { pathname } = request.nextUrl;
+  
+  // Normalize pathname: remove trailing slash (unless it's just "/")
+  if (pathname.length > 1 && pathname.endsWith("/")) {
+    pathname = pathname.slice(0, -1);
+  }
+
   const isRootRoute = pathname === "/";
-  const isLoginRoute = isLoginPath(pathname);
-  const isPublicRoute = isPublicPath(pathname);
+  const isLoginRoute = pathname === LOGIN_PATH;
+  const isPublicRoute = pathname === LOGIN_PATH || pathname === OTP_PATH || pathname.startsWith("/backend");
 
   const accessToken = request.cookies.get(ACCESS_COOKIE_NAME)?.value;
   const refreshToken = request.cookies.get(REFRESH_COOKIE_NAME)?.value;
