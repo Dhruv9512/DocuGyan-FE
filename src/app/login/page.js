@@ -27,6 +27,7 @@ const GoogleAuthSection = memo(function GoogleAuthSection({ googleLoading, onSuc
         key={renderKey}
         onSuccess={onSuccess}
         onError={onError}
+        useOneTap={false}
         theme="filled_black"
         size="large"
         shape="rectangular"
@@ -103,7 +104,7 @@ export default function LoginPage() {
     setRedirectStartedAt(Date.now());
     setAuthSuccess(true);
     window.setTimeout(() => {
-      router.push(targetPath);
+      window.location.href = targetPath;
     }, REDIRECT_DELAY_MS);
   }, [router, targetPath]);
 
