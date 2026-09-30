@@ -13,7 +13,7 @@ export function getBackendBaseUrl() {
   if (typeof window === "undefined") {
     return process.env.NEXT_PUBLIC_DEBUG === "true" 
       ? "http://localhost:8000" 
-      : "https://docugyan-backend.onrender.com";
+      : "https://documind-m1miu69j0-docugyan-6431s-projects.vercel.app";
   }
 
   // If running in the user's browser, use the proxy route
