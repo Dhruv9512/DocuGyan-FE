@@ -36,7 +36,7 @@ export function getBackendBaseUrl() {
   if (typeof window === "undefined") {
     return process.env.NEXT_PUBLIC_DEBUG === "true" 
       ? "http://localhost:8000" 
-      : "https://documind-ruddy-iota.vercel.app";
+      : "https://docugyan-backend.onrender.com";
   }
 
   // If running in the user's browser, use the proxy route
@@ -408,7 +408,7 @@ export async function uploadFileToBlob(file, folder, options = {}) {
 export function buildProcessWebSocketUrl(projectId, accessToken) {
   const isDebug = process.env.NEXT_PUBLIC_DEBUG === "true";
   let protocol = isDebug ? "ws:" : "wss:";
-  let host = isDebug ? "localhost:8000" : "documind-ruddy-iota.vercel.app";
+  let host = isDebug ? "localhost:8000" : "docugyan-backend.onrender.com";
 
   const wsUrl = new URL(`/ws/agent/process/${projectId}/`, `${protocol}//${host}`);
   wsUrl.searchParams.set("client", "docugyan-fe");
@@ -484,7 +484,7 @@ export async function deleteChatSession(sessionId) {
 export function buildChatWebSocketUrl(projectId, sessionId, accessToken) {
   const isDebug = process.env.NEXT_PUBLIC_DEBUG === "true";
   let protocol = isDebug ? "ws:" : "wss:";
-  let host = isDebug ? "localhost:8000" : "documind-ruddy-iota.vercel.app";
+  let host = isDebug ? "localhost:8000" : "docugyan-backend.onrender.com";
 
   const wsUrl = new URL(`/ws/chat/${projectId}/${sessionId}/`, `${protocol}//${host}`);
 
